@@ -20,8 +20,8 @@ class UserServiceImplTest {
     @Test
 
     void createUser() {
-        String username = "yo";
-        String email = "yo@gmail.com";
+        String username = "yommy31";
+        String email = "yommy31@gmail.com";
         String password = "1234";
         String gender = "MALE";
         userRepository.save(new User(username, email, password, gender));

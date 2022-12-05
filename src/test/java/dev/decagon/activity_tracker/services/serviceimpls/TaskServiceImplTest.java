@@ -3,6 +3,7 @@ package dev.decagon.activity_tracker.services.serviceimpls;
 import dev.decagon.activity_tracker.emums.Status;
 import dev.decagon.activity_tracker.entities.Task;
 import dev.decagon.activity_tracker.entities.User;
+import dev.decagon.activity_tracker.pojos.ApiResponseDto;
 import dev.decagon.activity_tracker.pojos.LoginDto;
 import dev.decagon.activity_tracker.pojos.TaskRequestDto;
 import dev.decagon.activity_tracker.pojos.TaskResponseDto;
@@ -10,6 +11,8 @@ import dev.decagon.activity_tracker.repositories.TaskRepository;
 import dev.decagon.activity_tracker.repositories.UserRepository;
 import dev.decagon.activity_tracker.services.TaskService;
 import dev.decagon.activity_tracker.services.UserService;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,24 +36,30 @@ class TaskServiceImplTest {
     TaskService taskService;
     @Autowired
     HttpSession session;
+
+    LoginDto request;
+    @BeforeEach
+    void setUp(){
+        request=new LoginDto();
+        request.setEmail("yommy33@gmail.com");
+        request.setPassword("1234");
+    }
+
+
     @Test
     void createTask() {
-        LoginDto request = new LoginDto();
-        request.setEmail("yo@gmail.com");
-        request.setPassword("1234");
+
+
         userService.validateUser(request, session);
         TaskRequestDto taskRequestDto = new TaskRequestDto();
         taskRequestDto.setTitle("Yome's");
         taskRequestDto.setDescription("complete my task now");
         taskService.createTask(taskRequestDto, session);
-        Task task = taskRepository.findById(8L).get();
+        Task task = taskRepository.findById(15L).get();
         assertEquals("Yome's", task.getTitle());
     }
     @Test
     void viewAllTask() {
-        LoginDto request = new LoginDto();
-        request.setEmail("yo@gmail.com");
-        request.setPassword("1234");
         userService.validateUser(request, session);
         User user = (User) session.getAttribute("currentUser");
         List<Task> tasks = user.getTasks();
@@ -82,9 +91,6 @@ class TaskServiceImplTest {
     }
     @Test
     void viewTaskByStatus() {
-        LoginDto request = new LoginDto();
-        request.setEmail("yo@gmail.com");
-        request.setPassword("1234");
         userService.validateUser(request, session);
         String status = "PENDING";
         ResponseEntity<List<TaskResponseDto>> task = taskService.viewTaskByStatus(status, session);
@@ -98,4 +104,5 @@ class TaskServiceImplTest {
         Task task = taskRepository.findById(1L).get();
         assertEquals(Status.IN_PROGRESS, task.getStatus());
     }
+
 }
